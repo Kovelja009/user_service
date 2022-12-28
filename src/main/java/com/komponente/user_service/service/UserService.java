@@ -11,4 +11,5 @@ public interface UserService {
     Page<UserDto> findAll(Pageable pageable);
     UserDto addUser(UserCreateDto userCreateDto);
     boolean activate(String code);
+    String loginUser(String username, String password);
 }

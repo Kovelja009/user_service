@@ -3,6 +3,7 @@ package com.komponente.user_service.service.implementation;
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.UserCreateDto;
+import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
 import com.komponente.user_service.model.Client;
 import com.komponente.user_service.repository.ClientRepository;
@@ -12,6 +13,8 @@ import com.komponente.user_service.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -43,13 +46,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public boolean deleteClient(String username) {
-        try {
-            Client client = clientRepository.findByUsername(username);
-            clientRepository.delete(client);
+        Optional<Client> client = clientRepository.findByUsername(username);
+        if(client.isPresent()) {
+            clientRepository.delete(client.get());
             return true;
-        } catch (Exception e) {
-            return false;
-        }
+        }else
+            throw new NotFoundException("Client not found");
     }
 
 

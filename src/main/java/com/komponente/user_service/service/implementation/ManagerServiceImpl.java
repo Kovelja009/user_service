@@ -3,6 +3,7 @@ package com.komponente.user_service.service.implementation;
 import com.komponente.user_service.dto.ManagerCreateDto;
 import com.komponente.user_service.dto.ManagerDto;
 import com.komponente.user_service.dto.UserCreateDto;
+import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
 import com.komponente.user_service.model.Client;
 import com.komponente.user_service.model.Manager;
@@ -13,6 +14,8 @@ import com.komponente.user_service.service.UserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
@@ -44,12 +47,11 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public boolean deleteManager(String username) {
-        try {
-            Manager manager = managerRepository.findByUsername(username);
-            managerRepository.delete(manager);
+        Optional<Manager> manager = managerRepository.findByUsername(username);
+        if(manager.isPresent()) {
+            managerRepository.delete(manager.get());
             return true;
-        } catch (Exception e) {
-            return false;
-        }
+        }else
+            throw new NotFoundException("Manager not found");
     }
 }

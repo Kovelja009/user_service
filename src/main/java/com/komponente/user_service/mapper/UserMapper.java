@@ -20,7 +20,7 @@ public class UserMapper {
         Client client = new Client();
         client.setPassportNumber(clientCreateDto.getPassportNumber());
         client.setRentDays(0);
-        client.setUser(userRepository.findByUsername(clientCreateDto.getUsername()));
+        client.setUser(userRepository.findByUsername(clientCreateDto.getUsername()).get());
         return client;
     }
 
@@ -28,7 +28,7 @@ public class UserMapper {
         Manager manager = new Manager();
         manager.setCompany(managerCreateDto.getCompany());
         manager.setStartDate(managerCreateDto.getStartDate());
-        manager.setUser(userRepository.findByUsername(managerCreateDto.getUsername()));
+        manager.setUser(userRepository.findByUsername(managerCreateDto.getUsername()).get());
         return manager;
     }
 
