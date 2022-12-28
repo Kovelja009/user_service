@@ -83,6 +83,13 @@ public class UserServiceImpl implements UserService {
         return tokenService.generate(claims);
     }
 
+    @Override
+    public void shouldBanUser(String username, boolean ban) {
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new NotFoundException(String.format("User with username: %s not found.", username)));
+        user.setBanned(ban);
+        userRepository.save(user);
+    }
+
     private String generateActivationCode() {
         String url = "http://localhost:8080/api/user/activate/";
         Integer code = (int) (Math.random() * 1000000);

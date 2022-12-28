@@ -29,9 +29,10 @@ public class ManagerController {
         return new ResponseEntity<>(managerService.addManager(managerCreateDto), HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<Boolean> deleteManager(@RequestParam String username) {
-        return new ResponseEntity<>(managerService.deleteManager(username), HttpStatus.OK);
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteManager(@RequestParam String username) {
+        managerService.deleteManager(username);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

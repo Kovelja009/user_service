@@ -29,8 +29,9 @@ public class ClientController {
         return new ResponseEntity<>(clientService.addClient(clientCreateDto), HttpStatus.CREATED);
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<Boolean> deleteClient(@RequestParam String username) {
-        return new ResponseEntity<>(clientService.deleteClient(username), HttpStatus.OK);
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteClient(@RequestParam String username) {
+        clientService.deleteClient(username);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

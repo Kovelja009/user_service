@@ -12,4 +12,5 @@ public interface UserService {
     UserDto addUser(UserCreateDto userCreateDto);
     boolean activate(String code);
     String loginUser(String username, String password);
+    void shouldBanUser(String username, boolean ban);
 }
