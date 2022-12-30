@@ -2,6 +2,7 @@ package com.komponente.user_service.controller;
 
 import com.komponente.user_service.dto.ManagerCreateDto;
 import com.komponente.user_service.dto.ManagerDto;
+import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ManagerService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -10,13 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
+
 @RestController
 @RequestMapping("/manager")
 public class ManagerController {
     private ManagerService managerService;
+    private TokenService tokenService;
 
-    public ManagerController(ManagerService managerService) {
+    public ManagerController(ManagerService managerService, TokenService tokenService) {
         this.managerService = managerService;
+        this.tokenService = tokenService;
     }
 
     @GetMapping
@@ -35,4 +40,13 @@ public class ManagerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/change_company")
+    public ResponseEntity<String> changeCompany(@RequestHeader("Authorization") String authorization, @RequestParam @Valid String company) {
+        return new ResponseEntity<>(managerService.changeCompany(tokenService.getIdFromToken(authorization), company), HttpStatus.OK);
+    }
+
+    @PostMapping("/change_date")
+    public ResponseEntity<Date> changeDate(@RequestHeader("Authorization") String authorization, @RequestParam @Valid Date date) {
+        return new ResponseEntity<>(managerService.changeDate(tokenService.getIdFromToken(authorization), date), HttpStatus.OK);
+    }
 }

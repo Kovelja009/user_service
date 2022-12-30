@@ -11,4 +11,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     Client findByUserId(User userId);
     @Query(value = "select c.id, c.passport_number, c.rent_days, c.user_id from users.user u join users.client c on u.id = c.user_id where u.username=?1", nativeQuery = true)
     Optional<Client> findByUsername(String username);
+    Optional<Client> findByPassportNumber(String passportNumber);
+    Optional<Client> findByUser(User user);
+
 }

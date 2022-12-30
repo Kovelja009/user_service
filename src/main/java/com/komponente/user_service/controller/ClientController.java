@@ -2,6 +2,7 @@ package com.komponente.user_service.controller;
 
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
+import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/client")
 public class ClientController {
     private ClientService clientService;
+    private TokenService tokenService;
 
-    public ClientController(ClientService clientService) {
+    public ClientController(ClientService clientService, TokenService tokenService) {
         this.clientService = clientService;
+        this.tokenService = tokenService;
     }
 
     @GetMapping
@@ -33,5 +36,10 @@ public class ClientController {
     public ResponseEntity<?> deleteClient(@RequestParam String username) {
         clientService.deleteClient(username);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/update_passport")
+    public ResponseEntity<String> updatePassportNumber(@RequestHeader("Authorization") String authorization, @RequestBody @Valid String passportNumber) {
+        return new ResponseEntity<>(clientService.updatePassportNumber(tokenService.getIdFromToken(authorization), passportNumber), HttpStatus.OK);
     }
 }

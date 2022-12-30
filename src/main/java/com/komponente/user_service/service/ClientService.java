@@ -9,4 +9,5 @@ public interface ClientService {
     Page<ClientDto> findAll(Pageable pageable);
     ClientDto addClient(ClientCreateDto clientCreateDto);
     boolean deleteClient(String username);
+    String updatePassportNumber(Long id, String passportNumber);
 }

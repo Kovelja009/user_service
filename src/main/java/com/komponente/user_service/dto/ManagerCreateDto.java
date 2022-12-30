@@ -1,25 +1,32 @@
 package com.komponente.user_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Date;
+import java.sql.Date;
 
 @Getter
 @Setter
 public class ManagerCreateDto {
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+    @NotBlank
     private String email;
+    @NotBlank
     private String phone;
 
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="dd-mm-yyyy")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date dateOfBirth;
     private String company;
 
-    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="dd-mm-yyyy")
+    @JsonFormat(shape= JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
     private Date startDate;
 }

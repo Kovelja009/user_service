@@ -3,6 +3,7 @@ package com.komponente.user_service.service.implementation;
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.UserCreateDto;
+import com.komponente.user_service.exceptions.ForbiddenException;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
 import com.komponente.user_service.model.Client;
@@ -37,6 +38,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDto addClient(ClientCreateDto clientCreateDto) {
+        if(clientRepository.findByPassportNumber(clientCreateDto.getPassportNumber()).isPresent())
+            throw new ForbiddenException("Passport already exists");
         UserCreateDto userCreateDto = userMapper.clientCreateDtoToUserCreateDto(clientCreateDto);
         userService.addUser(userCreateDto);
         Client client = userMapper.clientCreateDtoToClient(clientCreateDto);
@@ -54,5 +57,13 @@ public class ClientServiceImpl implements ClientService {
             throw new NotFoundException("Client not found");
     }
 
-
+    @Override
+    public String updatePassportNumber(Long id, String passportNumber) {
+        Client client = clientRepository.findByUser(userRepository.findById(id).get()).get();
+        if(clientRepository.findByPassportNumber(passportNumber).isPresent())
+            throw new ForbiddenException("Passport already exists");
+        client.setPassportNumber(passportNumber);
+        clientRepository.save(client);
+        return passportNumber;
+    }
 }

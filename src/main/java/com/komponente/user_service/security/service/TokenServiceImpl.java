@@ -1,5 +1,6 @@
 package com.komponente.user_service.security.service;
 
+import com.komponente.user_service.exceptions.ForbiddenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -32,5 +33,23 @@ public class TokenServiceImpl implements TokenService {
             return null;
         }
         return claims;
+    }
+
+    @Override
+    public Long getIdFromToken(String authorization) {
+        Claims claims;
+        try {
+            String [] split = authorization.split(" ");
+            if(!split[0].equals("Bearer"))
+                throw new IllegalArgumentException("Token must start with Bearer");
+            String jwt = split[1];
+            claims = Jwts.parser()
+                    .setSigningKey(jwtSecret)
+                    .parseClaimsJws(jwt)
+                    .getBody();
+        } catch (Exception e) {
+            throw new ForbiddenException("Token is not valid");
+        }
+        return Long.parseLong(claims.get("id", Integer.class).toString());
     }
 }

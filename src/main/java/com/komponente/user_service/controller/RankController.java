@@ -24,12 +24,13 @@ public class RankController {
     }
 
     @PostMapping
+//    TODO dodati authorization za admina
     public ResponseEntity<RankDto> addRank(@RequestBody @Valid RankDto rankDto) {
         return new ResponseEntity<>(rankService.addRank(rankDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/getRankByDays")
-    public ResponseEntity<RankDto> getRankByDays(@RequestParam int days) {
+    public ResponseEntity<RankDto> getRankByDays(@RequestParam @Valid int days) {
         return new ResponseEntity<>(rankService.getRankByDays(days), HttpStatus.OK);
     }
 

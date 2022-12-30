@@ -18,6 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.util.Optional;
+
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
@@ -97,4 +100,62 @@ public class UserServiceImpl implements UserService {
         return url;
     }
 
+    @Override
+    public String updateUsername(Long id, String username) {
+        Optional<User> optionalUser = userRepository.findByUsername(username);
+        if(optionalUser.isPresent())
+            throw new ForbiddenException("Username already exists");
+        User user = userRepository.findById(id).get();
+        user.setUsername(username);
+        userRepository.save(user);
+        return username;
+    }
+
+    @Override
+    public String updatePassword(Long id, String password) {
+        User user = userRepository.findById(id).get();
+        user.setPassword(password);
+        userRepository.save(user);
+        return password;
+    }
+
+    @Override
+    public String updateFirstName(Long id, String firstName) {
+        User user = userRepository.findById(id).get();
+        user.setFirstName(firstName);
+        userRepository.save(user);
+        return firstName;
+    }
+
+    @Override
+    public String updateLastName(Long id, String lastName) {
+        User user = userRepository.findById(id).get();
+        user.setLastName(lastName);
+        userRepository.save(user);
+        return lastName;
+    }
+
+    @Override
+    public String updateEmail(Long id, String email) {
+        User user = userRepository.findById(id).get();
+        user.setEmail(email);
+        userRepository.save(user);
+        return email;
+    }
+
+    @Override
+    public String updatePhoneNumber(Long id, String phoneNumber) {
+        User user = userRepository.findById(id).get();
+        user.setPhone(phoneNumber);
+        userRepository.save(user);
+        return phoneNumber;
+    }
+
+    @Override
+    public Date updateDateOfBirth(Long id, Date dateOfBirth) {
+        User user = userRepository.findById(id).get();
+        user.setDateOfBirth(dateOfBirth);
+        userRepository.save(user);
+        return dateOfBirth;
+    }
 }

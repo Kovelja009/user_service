@@ -1,20 +1,20 @@
 package com.komponente.user_service.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.sql.Date;
+
 
 @Getter
 @Setter
 @NoArgsConstructor
 
 @Entity
-@Table(indexes = {@Index(columnList = "username", unique = true), @Index(columnList = "email", unique = true)})
+@Table(indexes = {@Index(columnList = "username", unique = true)})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
