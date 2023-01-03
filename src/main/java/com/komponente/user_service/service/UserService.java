@@ -1,5 +1,6 @@
 package com.komponente.user_service.service;
 
+import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.dto.UserCreateDto;
 import com.komponente.user_service.dto.UserDto;
 import org.springframework.data.domain.Page;
@@ -20,5 +21,4 @@ public interface UserService {
     String updateEmail(Long id, String email);
     String updatePhoneNumber(Long id, String phoneNumber);
     Date updateDateOfBirth(Long id, Date dateOfBirth);
-
 }

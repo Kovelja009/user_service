@@ -1,18 +1,18 @@
 package com.komponente.user_service.service.implementation;
 
-import com.komponente.user_service.dto.ClientCreateDto;
-import com.komponente.user_service.dto.ManagerCreateDto;
-import com.komponente.user_service.dto.UserCreateDto;
-import com.komponente.user_service.dto.UserDto;
+import com.komponente.user_service.dto.*;
 import com.komponente.user_service.exceptions.ForbiddenException;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
+import com.komponente.user_service.model.Rank_discount;
 import com.komponente.user_service.model.User;
+import com.komponente.user_service.repository.RankRepository;
 import com.komponente.user_service.repository.UserRepository;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,17 +21,13 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.Optional;
 
+@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
     private TokenService tokenService;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, TokenService tokenService) {
-        this.userRepository = userRepository;
-        this.userMapper = userMapper;
-        this.tokenService = tokenService;
-    }
 
     @Override
     public Page<UserDto> findAll(Pageable pageable) {

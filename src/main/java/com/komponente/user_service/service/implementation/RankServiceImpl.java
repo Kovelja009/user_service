@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class RankServiceImpl implements RankService {
     private RankRepository rankRepository;
@@ -33,7 +35,12 @@ public class RankServiceImpl implements RankService {
 
     @Override
     public RankDto getRankByDays(int days) {
-        Rank_discount rankDiscount = rankRepository.findByMinDaysLessThanEqualAndMaxDaysGreaterThanEqual(days, days);
-        return rankMapper.rankToRankDto(rankDiscount);
+        Optional<Rank_discount> rankDiscount = rankRepository.findByMinDaysLessThanEqualAndMaxDaysGreaterThanEqual(days, days);
+        if(rankDiscount.isPresent())
+            return rankMapper.rankToRankDto(rankDiscount.get());
+        RankDto rankDto = new RankDto();
+        rankDto.setDiscount(0);
+        rankDto.setName("No rank");
+        return rankDto;
     }
 }

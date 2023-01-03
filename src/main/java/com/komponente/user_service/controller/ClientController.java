@@ -2,6 +2,7 @@ package com.komponente.user_service.controller;
 
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
+import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ClientService;
 import jakarta.validation.Valid;
@@ -41,5 +42,15 @@ public class ClientController {
     @PostMapping("/update_passport")
     public ResponseEntity<String> updatePassportNumber(@RequestHeader("Authorization") String authorization, @RequestBody @Valid String passportNumber) {
         return new ResponseEntity<>(clientService.updatePassportNumber(tokenService.getIdFromToken(authorization), passportNumber), HttpStatus.OK);
+    }
+
+    @PostMapping("/update_rent_days")
+    public ResponseEntity<Integer> updateRentDays(@RequestParam Long user_id, @RequestParam Integer rentDays) {
+        return new ResponseEntity<>(clientService.updateRentDays(user_id, rentDays), HttpStatus.OK);
+    }
+
+    @GetMapping("/get_rank")
+    public ResponseEntity<RankDto> getRankByUserId(@RequestParam Long user_id) {
+        return new ResponseEntity<>(clientService.getRankByUserId(user_id), HttpStatus.OK);
     }
 }
