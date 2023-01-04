@@ -4,16 +4,13 @@ import com.komponente.user_service.dto.*;
 import com.komponente.user_service.exceptions.ForbiddenException;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
-import com.komponente.user_service.model.Rank_discount;
 import com.komponente.user_service.model.User;
-import com.komponente.user_service.repository.RankRepository;
 import com.komponente.user_service.repository.UserRepository;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +30,21 @@ public class UserServiceImpl implements UserService {
     public Page<UserDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable).map(userMapper::userToUserDto);
 
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+
+        return userMapper.userToUserDto(user.get());
+    }
+
+    @Override
+    public UserIdDto getUserByUsername(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        UserIdDto userIdDto = new UserIdDto();
+        userIdDto.setId(user.get().getId());
+        return userIdDto;
     }
 
     @Override

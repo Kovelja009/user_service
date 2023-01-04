@@ -24,10 +24,6 @@ public class ManagerController {
         this.tokenService = tokenService;
     }
 
-    @GetMapping
-    public ResponseEntity<Page<ManagerDto>> getAllManagers(Pageable pageable) {
-        return new ResponseEntity<>(managerService.findAll(pageable), HttpStatus.OK);
-    }
 
     @PostMapping("/register")
     public ResponseEntity<ManagerDto> addManager(@RequestBody @Valid ManagerCreateDto managerCreateDto) {

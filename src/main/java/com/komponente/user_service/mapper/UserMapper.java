@@ -24,9 +24,9 @@ public class UserMapper {
         return client;
     }
 
-    public Manager managerCreateDtoToManager(ManagerCreateDto managerCreateDto){
+    public Manager managerCreateDtoToManager(ManagerCreateDto managerCreateDto, Long id){
         Manager manager = new Manager();
-        manager.setCompany(managerCreateDto.getCompany());
+        manager.setCompany(id);
         manager.setStartDate(managerCreateDto.getStartDate());
         manager.setUser(userRepository.findByUsername(managerCreateDto.getUsername()).get());
         return manager;
@@ -43,13 +43,13 @@ public class UserMapper {
         return clientDto;
     }
 
-    public ManagerDto managerToManagerDto(Manager manager){
+    public ManagerDto managerToManagerDto(Manager manager, String company){
         ManagerDto managerDto = new ManagerDto();
         managerDto.setUsername(manager.getUser().getUsername());
         managerDto.setFirstName(manager.getUser().getFirstName());
         managerDto.setLastName(manager.getUser().getLastName());
         managerDto.setEmail(manager.getUser().getEmail());
-        managerDto.setCompany(manager.getCompany());
+        managerDto.setCompany(company);
         managerDto.setPhone(manager.getUser().getPhone());
         return managerDto;
     }

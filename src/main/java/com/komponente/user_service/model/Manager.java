@@ -23,7 +23,7 @@ public class Manager {
     private User user;
 
     @Column(unique = true)
-    private String company;
+    private Long company;
 
     private Date startDate;
 }

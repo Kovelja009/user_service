@@ -1,25 +1,36 @@
 package com.komponente.user_service.controller;
 
+import com.komponente.user_service.dto.UserDto;
+import com.komponente.user_service.dto.UserIdDto;
 import com.komponente.user_service.security.CheckSecurity;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/user")
 public class UserController {
     private UserService userService;
     private TokenService tokenService;
 
-    public UserController(UserService userService, TokenService tokenService) {
-        this.userService = userService;
-        this.tokenService = tokenService;
+    @GetMapping("/id")
+    public ResponseEntity<UserDto> getUserById(@RequestParam Long id) {
+        return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
+
+    @GetMapping("/username")
+    public ResponseEntity<UserIdDto> getUserByUsername(@RequestParam String username) {
+        return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
+    }
+
+
 
     @GetMapping("/activate/{code}")
     public ResponseEntity<Boolean> activateUserAccount(@PathVariable("code") String code) {

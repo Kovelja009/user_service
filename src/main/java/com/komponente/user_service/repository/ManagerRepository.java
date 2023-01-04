@@ -14,5 +14,5 @@ public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
     @Query(value = "select m.id, m.company, m.start_date, m.user_id  from users.user u join users.manager m on u.id = m.user_id where u.username=?1", nativeQuery = true)
     Optional<Manager> findByUsername(String username);
-    Optional<Manager> findByCompany(String company);
+    Optional<Manager> findByCompany(Long company);
 }

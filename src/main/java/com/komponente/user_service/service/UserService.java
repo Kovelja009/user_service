@@ -3,6 +3,7 @@ package com.komponente.user_service.service;
 import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.dto.UserCreateDto;
 import com.komponente.user_service.dto.UserDto;
+import com.komponente.user_service.dto.UserIdDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,4 +22,6 @@ public interface UserService {
     String updateEmail(Long id, String email);
     String updatePhoneNumber(Long id, String phoneNumber);
     Date updateDateOfBirth(Long id, Date dateOfBirth);
+    UserDto getUserById(Long id);
+    UserIdDto getUserByUsername(String username);
 }
