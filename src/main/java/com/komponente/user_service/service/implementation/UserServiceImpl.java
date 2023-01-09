@@ -57,6 +57,8 @@ public class UserServiceImpl implements UserService {
         user.setActivationCode(generateActivationCode());
         userRepository.save(user);
 //        TODO add notification sending through message broker
+        // localhost/8080/api/user/activate/{code}
+        //ActivationDto firstName lastName link: localhost:8080/api/register/tajCode kad klikne na to idemo u controller
         System.out.println(user.getActivationCode());
         return userMapper.userToUserDto(user);
     }
