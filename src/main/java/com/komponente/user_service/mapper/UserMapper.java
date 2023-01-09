@@ -102,4 +102,13 @@ public class UserMapper {
         return userCreateDto;
     }
 
+    public ActivationMailDTO UserToActivationMailDTO(User user){
+        ActivationMailDTO activationMailDTO = new ActivationMailDTO();
+        activationMailDTO.setFirstName(user.getFirstName());
+        activationMailDTO.setLastName(user.getLastName());
+        activationMailDTO.setEmail(user.getEmail());
+        activationMailDTO.setActivationLink(user.getActivationCode());
+        return activationMailDTO;
+    }
+
 }

@@ -10,21 +10,32 @@ import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private UserMapper userMapper;
     private TokenService tokenService;
+    private JmsTemplate jmsTemplate;
+    private String activationMailDestination;
+    private MessageHelper messageHelper;
 
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, TokenService tokenService, JmsTemplate jmsTemplate, @Value("${destination.activationMail}")String activationMailDestination, MessageHelper messageHelper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+        this.tokenService = tokenService;
+        this.jmsTemplate = jmsTemplate;
+        this.activationMailDestination = activationMailDestination;
+        this.messageHelper = messageHelper;
+    }
 
     @Override
     public Page<UserDto> findAll(Pageable pageable) {
@@ -57,8 +68,10 @@ public class UserServiceImpl implements UserService {
         user.setActivationCode(generateActivationCode());
         userRepository.save(user);
 //        TODO add notification sending through message broker
-        // localhost/8080/api/user/activate/{code}
+        ActivationMailDTO activationMailDto = userMapper.UserToActivationMailDTO(user);
+        // localhost/8084/api/user/activate/{code}
         //ActivationDto firstName lastName link: localhost:8080/api/register/tajCode kad klikne na to idemo u controller
+        jmsTemplate.convertAndSend(activationMailDestination, messageHelper.createTextMessage(activationMailDto));
         System.out.println(user.getActivationCode());
         return userMapper.userToUserDto(user);
     }
