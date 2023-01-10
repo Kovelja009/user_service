@@ -30,8 +30,6 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserByUsername(username), HttpStatus.OK);
     }
 
-
-
     @GetMapping("/activate/{code}")
     public ResponseEntity<Boolean> activateUserAccount(@PathVariable("code") String code) {
         return new ResponseEntity<>(userService.activate(code), HttpStatus.OK);

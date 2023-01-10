@@ -26,14 +26,19 @@ public class UserServiceImpl implements UserService {
     private TokenService tokenService;
     private JmsTemplate jmsTemplate;
     private String activationMailDestination;
+    private String passwordChangeDestination;
     private MessageHelper messageHelper;
 
-    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, TokenService tokenService, JmsTemplate jmsTemplate, @Value("${destination.activationMail}")String activationMailDestination, MessageHelper messageHelper) {
+    public UserServiceImpl(UserRepository userRepository, UserMapper userMapper, TokenService tokenService, JmsTemplate jmsTemplate,
+                           @Value("${destination.activationMail}")String activationMailDestination,
+                           @Value("${destination.passwordMail}")String passwordChangeDestination,
+                           MessageHelper messageHelper) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.tokenService = tokenService;
         this.jmsTemplate = jmsTemplate;
         this.activationMailDestination = activationMailDestination;
+        this.passwordChangeDestination = passwordChangeDestination;
         this.messageHelper = messageHelper;
     }
 
@@ -68,7 +73,7 @@ public class UserServiceImpl implements UserService {
         user.setActivationCode(generateActivationCode());
         userRepository.save(user);
 //        TODO add notification sending through message broker
-        ActivationMailDTO activationMailDto = userMapper.UserToActivationMailDTO(user);
+        NotificationDto activationMailDto = userMapper.UserToActivationMailDTO(user);
         // localhost/8084/api/user/activate/{code}
         //ActivationDto firstName lastName link: localhost:8080/api/register/tajCode kad klikne na to idemo u controller
         jmsTemplate.convertAndSend(activationMailDestination, messageHelper.createTextMessage(activationMailDto));
@@ -139,6 +144,9 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id).get();
         user.setPassword(password);
         userRepository.save(user);
+        NotificationDto activationMailDto = userMapper.UserToPasswordChangeDTO(user);
+
+        jmsTemplate.convertAndSend(passwordChangeDestination, messageHelper.createTextMessage(activationMailDto));
         return password;
     }
 

@@ -102,12 +102,13 @@ public class UserMapper {
         return userCreateDto;
     }
 
-    public ActivationMailDTO UserToActivationMailDTO(User user){
-        ActivationMailDTO activationMailDTO = new ActivationMailDTO();
-        activationMailDTO.setFirstName(user.getFirstName());
-        activationMailDTO.setLastName(user.getLastName());
-        activationMailDTO.setEmail(user.getEmail());
-        activationMailDTO.setActivationLink(user.getActivationCode());
+    public NotificationDto UserToActivationMailDTO(User user){
+        NotificationDto activationMailDTO = new NotificationDto(user.getEmail(), "activation","Click here  %s to activate your account with username: %s",null,null,null, user.getUsername(),null, user.getActivationCode());
+        return activationMailDTO;
+    }
+
+    public NotificationDto UserToPasswordChangeDTO(User user){
+        NotificationDto activationMailDTO =  new NotificationDto(user.getEmail(), "password","Dear %s %s Your password is changed",user.getFirstName(), user.getLastName(), null, null,null, null);
         return activationMailDTO;
     }
 
