@@ -77,7 +77,8 @@ public class ManagerServiceImpl implements ManagerService {
         if(companyIdDto == null)
             return false;
         Optional<Manager> manager = managerRepository.findByCompany(companyIdDto.getId());
-        return manager.isEmpty();
+
+        return !manager.isPresent();
     }
 
     private CompanyIdDto getCompanyId(String company){

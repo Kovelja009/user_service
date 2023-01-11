@@ -2,7 +2,7 @@ package com.komponente.user_service.controller;
 
 import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.service.RankService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

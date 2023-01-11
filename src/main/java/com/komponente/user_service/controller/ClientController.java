@@ -5,7 +5,7 @@ import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ClientService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

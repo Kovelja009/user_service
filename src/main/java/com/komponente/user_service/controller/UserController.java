@@ -5,7 +5,7 @@ import com.komponente.user_service.dto.UserIdDto;
 import com.komponente.user_service.security.CheckSecurity;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
