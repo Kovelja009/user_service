@@ -1,7 +1,6 @@
 package com.komponente.user_service.controller;
 
-import com.komponente.user_service.dto.UserDto;
-import com.komponente.user_service.dto.UserIdDto;
+import com.komponente.user_service.dto.*;
 import com.komponente.user_service.security.CheckSecurity;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
@@ -24,6 +23,7 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(@RequestParam Long id) {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
+
 
     @GetMapping("/username")
     public ResponseEntity<UserIdDto> getUserByUsername(@RequestParam String username) {

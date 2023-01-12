@@ -12,6 +12,7 @@ import java.sql.Date;
 public interface UserService {
     Page<UserDto> findAll(Pageable pageable);
     UserDto addUser(UserCreateDto userCreateDto);
+    UserDto update(Long id, UserCreateDto userCreateDto);
     boolean activate(String code);
     String loginUser(String username, String password);
     void shouldBanUser(String username, boolean ban);
@@ -23,5 +24,6 @@ public interface UserService {
     String updatePhoneNumber(Long id, String phoneNumber);
     Date updateDateOfBirth(Long id, Date dateOfBirth);
     UserDto getUserById(Long id);
+
     UserIdDto getUserByUsername(String username);
 }

@@ -103,7 +103,7 @@ public class UserMapper {
     }
 
     public NotificationDto UserToActivationMailDTO(User user){
-        NotificationDto activationMailDTO = new NotificationDto(user.getEmail(), "activation","Click here  %s to activate your account with username: %s",null,null,null, user.getUsername(),null, user.getActivationCode());
+        NotificationDto activationMailDTO = new NotificationDto(user.getEmail(), "activation","To activate your account with username: %s click here  %s ",null,null,null, user.getUsername(),null, user.getActivationCode());
         return activationMailDTO;
     }
 

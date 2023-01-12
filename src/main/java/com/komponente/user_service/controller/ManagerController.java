@@ -1,5 +1,7 @@
 package com.komponente.user_service.controller;
 
+import com.komponente.user_service.dto.ClientCreateDto;
+import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.ManagerCreateDto;
 import com.komponente.user_service.dto.ManagerDto;
 import com.komponente.user_service.security.service.TokenService;
@@ -26,6 +28,11 @@ public class ManagerController {
     @PostMapping("/register")
     public ResponseEntity<ManagerDto> addManager(@RequestBody @Valid ManagerCreateDto managerCreateDto) {
         return new ResponseEntity<>(managerService.addManager(managerCreateDto), HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<ManagerDto> updateUser(@RequestHeader("Authorization") String authorization, @RequestBody @Valid ManagerCreateDto clientCreateDto) {
+        return new ResponseEntity<>(managerService.update(tokenService.getIdFromToken(authorization),clientCreateDto), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete")

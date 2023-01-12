@@ -10,5 +10,6 @@ public interface ManagerService {
     boolean deleteManager(String username);
     Date changeDate(Long id, Date date);
     String changeCompany(Long id, String company);
+    ManagerDto update(Long id, ManagerCreateDto managerCreateDto);
 
 }

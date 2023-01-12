@@ -50,6 +50,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public ClientDto update(Long id, ClientCreateDto clientCreateDto) {
+        Client client = clientRepository.findByUser(userRepository.findById(id).get()).get();
+        if(!clientRepository.findByPassportNumber(clientCreateDto.getPassportNumber()).isPresent())
+            client.setPassportNumber(clientCreateDto.getPassportNumber());
+        userService.update(id, userMapper.clientCreateDtoToUserCreateDto(clientCreateDto));
+        client.setUser(userRepository.findById(id).get());
+        clientRepository.save(client);
+        return userMapper.clientToClientDto(client);
+    }
+
+    @Override
     public boolean deleteClient(String username) {
         Optional<Client> client = clientRepository.findByUsername(username);
         if(client.isPresent()) {

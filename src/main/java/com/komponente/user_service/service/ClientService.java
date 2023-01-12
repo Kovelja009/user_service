@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 public interface ClientService {
     Page<ClientDto> findAll(Pageable pageable);
     ClientDto addClient(ClientCreateDto clientCreateDto);
+
+    ClientDto update(Long id, ClientCreateDto clientCreateDto);
     boolean deleteClient(String username);
     String updatePassportNumber(Long id, String passportNumber);
     Integer updateRentDays(Long id, Integer rentDays);

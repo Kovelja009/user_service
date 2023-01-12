@@ -51,7 +51,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long id) {
         Optional<User> user = userRepository.findById(id);
-
         return userMapper.userToUserDto(user.get());
     }
 
@@ -67,7 +66,7 @@ public class UserServiceImpl implements UserService {
     public UserDto addUser(UserCreateDto userCreateDto) {
         if(userRepository.findByUsername(userCreateDto.getUsername()).isPresent())
             throw new ForbiddenException("Username already exists");
-
+        System.out.println("user stigao");
         User user = userMapper.userCreateDtoToUser(userCreateDto);
         user.setBanned(false);
         user.setActivationCode(generateActivationCode());
@@ -80,6 +79,9 @@ public class UserServiceImpl implements UserService {
         System.out.println(user.getActivationCode());
         return userMapper.userToUserDto(user);
     }
+
+
+
 
     @Override
     public boolean activate(String code) {
@@ -126,6 +128,20 @@ public class UserServiceImpl implements UserService {
         Integer code = (int) (Math.random() * 1000000);
         url += code.toString();
         return url;
+    }
+
+    @Override
+    public UserDto update(Long id, UserCreateDto userCreateDto) {
+        User user = userRepository.findById(id).get();
+        if(!userRepository.findByUsername(userCreateDto.getUsername()).isPresent())
+            updateUsername(id, userCreateDto.getUsername());
+        updatePassword(id,userCreateDto.getPassword());
+        updateFirstName(id,userCreateDto.getFirstName());
+        updateLastName(id,userCreateDto.getLastName());
+        updateEmail(id,userCreateDto.getEmail());
+        updatePhoneNumber(id,userCreateDto.getPhone());
+        updateDateOfBirth(id,userCreateDto.getDateOfBirth());
+        return userMapper.userToUserDto(user);
     }
 
     @Override

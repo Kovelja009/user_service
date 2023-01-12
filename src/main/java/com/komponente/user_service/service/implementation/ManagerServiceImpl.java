@@ -1,11 +1,10 @@
 package com.komponente.user_service.service.implementation;
 
 import com.komponente.user_service.company_sync_comm.dto.CompanyIdDto;
-import com.komponente.user_service.dto.ManagerCreateDto;
-import com.komponente.user_service.dto.ManagerDto;
-import com.komponente.user_service.dto.UserCreateDto;
+import com.komponente.user_service.dto.*;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
+import com.komponente.user_service.model.Client;
 import com.komponente.user_service.model.Manager;
 import com.komponente.user_service.repository.ManagerRepository;
 import com.komponente.user_service.repository.UserRepository;
@@ -40,6 +39,19 @@ public class ManagerServiceImpl implements ManagerService {
         UserCreateDto userCreateDto = userMapper.managerCreateDtoToUserCreateDto(managerCreateDto);
         userService.addUser(userCreateDto);
         Manager manager = userMapper.managerCreateDtoToManager(managerCreateDto, companyIdDto.getId());
+        managerRepository.save(manager);
+        return userMapper.managerToManagerDto(manager, managerCreateDto.getCompany());
+    }
+
+    @Override
+    public ManagerDto update(Long id, ManagerCreateDto managerCreateDto) {
+        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
+        CompanyIdDto companyIdDto = getCompanyId(managerCreateDto.getCompany());
+        if(validCompany(companyIdDto))
+            changeCompany(id, managerCreateDto.getCompany());
+        userService.update(id, userMapper.managerCreateDtoToUserCreateDto(managerCreateDto));
+        manager.setUser(userRepository.findById(id).get());
+        changeDate(id,managerCreateDto.getStartDate());
         managerRepository.save(manager);
         return userMapper.managerToManagerDto(manager, managerCreateDto.getCompany());
     }

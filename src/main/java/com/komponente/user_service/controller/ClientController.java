@@ -3,6 +3,7 @@ package com.komponente.user_service.controller;
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.RankDto;
+import com.komponente.user_service.dto.UserCreateDto;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ClientService;
 import javax.validation.Valid;
@@ -26,6 +27,10 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<Page<ClientDto>> getAllClients(Pageable pageable) {
         return new ResponseEntity<>(clientService.findAll(pageable), HttpStatus.OK);
+    }
+    @PutMapping
+    public ResponseEntity<ClientDto> updateUser(@RequestHeader("Authorization") String authorization, @RequestBody @Valid ClientCreateDto clientCreateDto) {
+        return new ResponseEntity<>(clientService.update(tokenService.getIdFromToken(authorization),clientCreateDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/register")
