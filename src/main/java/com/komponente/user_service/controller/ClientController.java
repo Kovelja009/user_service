@@ -3,7 +3,6 @@ package com.komponente.user_service.controller;
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.RankDto;
-import com.komponente.user_service.dto.UserCreateDto;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ClientService;
 import javax.validation.Valid;
@@ -12,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/client")
@@ -25,12 +26,8 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ClientDto>> getAllClients(Pageable pageable) {
-        return new ResponseEntity<>(clientService.findAll(pageable), HttpStatus.OK);
-    }
-    @PutMapping
-    public ResponseEntity<ClientDto> updateUser(@RequestHeader("Authorization") String authorization, @RequestBody @Valid ClientCreateDto clientCreateDto) {
-        return new ResponseEntity<>(clientService.update(tokenService.getIdFromToken(authorization),clientCreateDto), HttpStatus.CREATED);
+    public ResponseEntity<List<ClientDto>> getAllClients() {
+        return new ResponseEntity<>(clientService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -42,6 +39,11 @@ public class ClientController {
     public ResponseEntity<?> deleteClient(@RequestParam String username) {
         clientService.deleteClient(username);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ClientDto> updateClient(@RequestHeader("Authorization") String authorization, @RequestBody @Valid ClientCreateDto clientCreateDto) {
+        return new ResponseEntity<>(clientService.updateClient(tokenService.getIdFromToken(authorization),clientCreateDto), HttpStatus.OK);
     }
 
     @PostMapping("/update_passport")

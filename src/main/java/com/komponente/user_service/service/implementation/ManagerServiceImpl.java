@@ -2,17 +2,16 @@ package com.komponente.user_service.service.implementation;
 
 import com.komponente.user_service.company_sync_comm.dto.CompanyIdDto;
 import com.komponente.user_service.dto.*;
+import com.komponente.user_service.exceptions.ForbiddenException;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
-import com.komponente.user_service.model.Client;
 import com.komponente.user_service.model.Manager;
 import com.komponente.user_service.repository.ManagerRepository;
 import com.komponente.user_service.repository.UserRepository;
 import com.komponente.user_service.service.ManagerService;
 import com.komponente.user_service.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -44,14 +43,18 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public ManagerDto update(Long id, ManagerCreateDto managerCreateDto) {
+    public ManagerDto updateManager(Long id, ManagerCreateDto managerCreateDto) {
+        // if user update is not valid it will throw exception
+        try {
+            userService.update(id, userMapper.managerCreateDtoToUserCreateDto(managerCreateDto));
+        }catch (Exception e){
+            throw new NotFoundException("Invalid user update");
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
         Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
-        CompanyIdDto companyIdDto = getCompanyId(managerCreateDto.getCompany());
-        if(validCompany(companyIdDto))
-            changeCompany(id, managerCreateDto.getCompany());
-        userService.update(id, userMapper.managerCreateDtoToUserCreateDto(managerCreateDto));
+        changeCompany(id, managerCreateDto.getCompany()); // checks if company is valid
         manager.setUser(userRepository.findById(id).get());
-        changeDate(id,managerCreateDto.getStartDate());
+        manager.setStartDate(managerCreateDto.getStartDate());
         managerRepository.save(manager);
         return userMapper.managerToManagerDto(manager, managerCreateDto.getCompany());
     }
@@ -67,19 +70,16 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public Date changeDate(Long id, Date date) {
-        Manager manager = managerRepository.findByUsername(userRepository.findById(id).get().getUsername()).get();
-        manager.setStartDate(date);
-        managerRepository.save(manager);
-        return date;
-    }
-
-    @Override
     public String changeCompany(Long id, String company) {
+        // if company is not valid it will throw exception
         CompanyIdDto companyIdDto = getCompanyId(company);
-        if(!validCompany(companyIdDto))
-            throw new NotFoundException("Company " + company + " is not valid!");
-        Manager manager = managerRepository.findByUsername(userRepository.findById(id).get().getUsername()).get();
+        if(companyIdDto == null)
+            throw new NotFoundException("Company " + company + " does not exist!");
+        Optional<Manager> company_manager = managerRepository.findByCompany(companyIdDto.getId());
+        if(company_manager.isPresent() && !company_manager.get().getUser().getId().equals(id))
+            throw new ForbiddenException("Company " + company + " is already taken!");
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
         manager.setCompany(companyIdDto.getId());
         managerRepository.save(manager);
         return company;
@@ -96,5 +96,13 @@ public class ManagerServiceImpl implements ManagerService {
     private CompanyIdDto getCompanyId(String company){
         ResponseEntity<CompanyIdDto> response = reservationServiceRestTemplate.exchange("/company/get_company?name="+company, HttpMethod.GET, null, CompanyIdDto.class);
         return response.getBody();
+    }
+
+    @Override
+    public Date changeDate(Long id, Date date) {
+        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
+        manager.setStartDate(date);
+        managerRepository.save(manager);
+        return date;
     }
 }

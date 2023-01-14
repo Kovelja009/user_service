@@ -8,8 +8,7 @@ import java.sql.Date;
 public interface ManagerService {
     ManagerDto addManager(ManagerCreateDto managerCreateDto);
     boolean deleteManager(String username);
-    Date changeDate(Long id, Date date);
     String changeCompany(Long id, String company);
-    ManagerDto update(Long id, ManagerCreateDto managerCreateDto);
-
+    ManagerDto updateManager(Long id, ManagerCreateDto managerCreateDto);
+    Date changeDate (Long idFromToken, Date date);
 }

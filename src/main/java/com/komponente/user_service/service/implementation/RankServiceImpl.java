@@ -5,11 +5,11 @@ import com.komponente.user_service.mapper.RankMapper;
 import com.komponente.user_service.model.Rank_discount;
 import com.komponente.user_service.repository.RankRepository;
 import com.komponente.user_service.service.RankService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RankServiceImpl implements RankService {
@@ -22,8 +22,8 @@ public class RankServiceImpl implements RankService {
     }
 
     @Override
-    public Page<RankDto> findAll(Pageable pageable) {
-        return rankRepository.findAll(pageable).map(rankMapper::rankToRankDto);
+    public List<RankDto> findAll() {
+        return rankRepository.findAll().stream().map(rankMapper::rankToRankDto).collect(Collectors.toList());
     }
 
     @Override

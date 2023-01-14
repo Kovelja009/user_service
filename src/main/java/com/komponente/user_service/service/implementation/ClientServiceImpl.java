@@ -1,9 +1,6 @@
 package com.komponente.user_service.service.implementation;
 
-import com.komponente.user_service.dto.ClientCreateDto;
-import com.komponente.user_service.dto.ClientDto;
-import com.komponente.user_service.dto.RankDto;
-import com.komponente.user_service.dto.UserCreateDto;
+import com.komponente.user_service.dto.*;
 import com.komponente.user_service.exceptions.ForbiddenException;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.RankMapper;
@@ -14,14 +11,13 @@ import com.komponente.user_service.repository.ClientRepository;
 import com.komponente.user_service.repository.RankRepository;
 import com.komponente.user_service.repository.UserRepository;
 import com.komponente.user_service.service.ClientService;
-import com.komponente.user_service.service.RankService;
 import com.komponente.user_service.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -34,8 +30,8 @@ public class ClientServiceImpl implements ClientService {
     private RankMapper rankMapper;
 
     @Override
-    public Page<ClientDto> findAll(Pageable pageable) {
-        return clientRepository.findAll(pageable).map(userMapper::clientToClientDto);
+    public List<ClientDto> findAll() {
+        return clientRepository.findAll().stream().map(userMapper::clientToClientDto).collect(Collectors.toList());
     }
 
     @Override
@@ -50,11 +46,21 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientDto update(Long id, ClientCreateDto clientCreateDto) {
-        Client client = clientRepository.findByUser(userRepository.findById(id).get()).get();
-        if(!clientRepository.findByPassportNumber(clientCreateDto.getPassportNumber()).isPresent())
-            client.setPassportNumber(clientCreateDto.getPassportNumber());
-        userService.update(id, userMapper.clientCreateDtoToUserCreateDto(clientCreateDto));
+    public ClientDto updateClient(Long id, ClientCreateDto clientCreateDto) {
+//        if user update is not valid it will throw exception
+        try {
+            userService.update(id, userMapper.clientCreateDtoToUserCreateDto(clientCreateDto));
+        }catch (Exception e){
+            throw new NotFoundException("Invalid user update");
+        }
+
+        Optional<Client> optional = clientRepository.findByUser(userRepository.findById(id).get());
+        if(!optional.isPresent())
+            throw new NotFoundException("Client not found");
+        /////////////////////////////////////////////////////////
+
+        Client client = optional.get();
+        updatePassportNumber(id, clientCreateDto.getPassportNumber()); // checks whether passport_number is unique
         client.setUser(userRepository.findById(id).get());
         clientRepository.save(client);
         return userMapper.clientToClientDto(client);
@@ -72,9 +78,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public String updatePassportNumber(Long id, String passportNumber) {
+//        whether passport_number is unique
         Client client = clientRepository.findByUser(userRepository.findById(id).get()).get();
-        if(clientRepository.findByPassportNumber(passportNumber).isPresent())
+        Optional<Client> passport = clientRepository.findByPassportNumber(passportNumber);
+        if(passport.isPresent() && passport.get().getId() != client.getId())
             throw new ForbiddenException("Passport already exists");
+
         client.setPassportNumber(passportNumber);
         clientRepository.save(client);
         return passportNumber;

@@ -10,14 +10,15 @@ import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -43,8 +44,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserDto> findAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(userMapper::userToUserDto);
+    public List<UserDto> findAll() {
+        return userRepository.findAll().stream().map(userMapper::userToUserDto).collect(Collectors.toList());
 
     }
 
@@ -57,6 +58,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserIdDto getUserByUsername(String username) {
         Optional<User> user = userRepository.findByUsername(username);
+        if(!user.isPresent())
+            throw new NotFoundException("User not found");
         UserIdDto userIdDto = new UserIdDto();
         userIdDto.setId(user.get().getId());
         return userIdDto;
@@ -133,8 +136,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(Long id, UserCreateDto userCreateDto) {
         User user = userRepository.findById(id).get();
-        if(!userRepository.findByUsername(userCreateDto.getUsername()).isPresent())
-            updateUsername(id, userCreateDto.getUsername());
+        if(!userRepository.findById(id).isPresent())
+            throw new NotFoundException("User not found");
+
+        updateUsername(id, userCreateDto.getUsername());
         updatePassword(id,userCreateDto.getPassword());
         updateFirstName(id,userCreateDto.getFirstName());
         updateLastName(id,userCreateDto.getLastName());
@@ -147,7 +152,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String updateUsername(Long id, String username) {
         Optional<User> optionalUser = userRepository.findByUsername(username);
-        if(optionalUser.isPresent())
+        if(optionalUser.isPresent() && !optionalUser.get().getId().equals(id))
             throw new ForbiddenException("Username already exists");
         User user = userRepository.findById(id).get();
         user.setUsername(username);

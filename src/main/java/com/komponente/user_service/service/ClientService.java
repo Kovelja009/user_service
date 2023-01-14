@@ -3,14 +3,14 @@ package com.komponente.user_service.service;
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.RankDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface ClientService {
-    Page<ClientDto> findAll(Pageable pageable);
+    List<ClientDto> findAll();
     ClientDto addClient(ClientCreateDto clientCreateDto);
 
-    ClientDto update(Long id, ClientCreateDto clientCreateDto);
+    ClientDto updateClient(Long id, ClientCreateDto clientCreateDto);
     boolean deleteClient(String username);
     String updatePassportNumber(Long id, String passportNumber);
     Integer updateRentDays(Long id, Integer rentDays);

@@ -3,11 +3,12 @@ package com.komponente.user_service.controller;
 import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.service.RankService;
 import javax.validation.Valid;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/rank")
@@ -19,8 +20,8 @@ public class RankController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<RankDto>> getAllRanks(Pageable pageable) {
-        return new ResponseEntity<>(rankService.findAll(pageable), HttpStatus.OK);
+    public ResponseEntity<List<RankDto>> getAllRanks() {
+        return new ResponseEntity<>(rankService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping

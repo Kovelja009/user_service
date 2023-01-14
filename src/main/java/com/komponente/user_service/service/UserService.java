@@ -1,16 +1,14 @@
 package com.komponente.user_service.service;
 
-import com.komponente.user_service.dto.RankDto;
 import com.komponente.user_service.dto.UserCreateDto;
 import com.komponente.user_service.dto.UserDto;
 import com.komponente.user_service.dto.UserIdDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 
 import java.sql.Date;
+import java.util.List;
 
 public interface UserService {
-    Page<UserDto> findAll(Pageable pageable);
+    List<UserDto> findAll();
     UserDto addUser(UserCreateDto userCreateDto);
     UserDto update(Long id, UserCreateDto userCreateDto);
     boolean activate(String code);

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -18,6 +19,11 @@ import java.sql.Date;
 public class UserController {
     private UserService userService;
     private TokenService tokenService;
+
+    @GetMapping
+    public ResponseEntity<List<UserDto>> getAllUsers(){
+        return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
+    }
 
     @GetMapping("/id")
     public ResponseEntity<UserDto> getUserById(@RequestParam Long id) {
