@@ -105,4 +105,10 @@ public class ManagerServiceImpl implements ManagerService {
         managerRepository.save(manager);
         return date;
     }
+
+    @Override
+    public String getCompany(Long userId) {
+        Manager manager = managerRepository.findByUserId(userRepository.findById(userId).get());
+        return manager.getCompany().toString();
+    }
 }

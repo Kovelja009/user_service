@@ -11,4 +11,5 @@ public interface ManagerService {
     String changeCompany(Long id, String company);
     ManagerDto updateManager(Long id, ManagerCreateDto managerCreateDto);
     Date changeDate (Long idFromToken, Date date);
+    String getCompany(Long userId);
 }

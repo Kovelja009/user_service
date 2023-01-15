@@ -3,6 +3,7 @@ package com.komponente.user_service.controller;
 import com.komponente.user_service.dto.ClientCreateDto;
 import com.komponente.user_service.dto.ClientDto;
 import com.komponente.user_service.dto.RankDto;
+import com.komponente.user_service.security.CheckSecurity;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ClientService;
 import javax.validation.Valid;
@@ -36,28 +37,33 @@ public class ClientController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteClient(@RequestParam String username) {
+    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_CLIENT"})
+    public ResponseEntity<?> deleteClient(@RequestHeader("Authorization") String authorization, @RequestParam String username) {
         clientService.deleteClient(username);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/update")
+    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_CLIENT"})
     public ResponseEntity<ClientDto> updateClient(@RequestHeader("Authorization") String authorization, @RequestBody @Valid ClientCreateDto clientCreateDto) {
         return new ResponseEntity<>(clientService.updateClient(tokenService.getIdFromToken(authorization),clientCreateDto), HttpStatus.OK);
     }
 
     @PostMapping("/update_passport")
+    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_CLIENT"})
     public ResponseEntity<String> updatePassportNumber(@RequestHeader("Authorization") String authorization, @RequestBody @Valid String passportNumber) {
         return new ResponseEntity<>(clientService.updatePassportNumber(tokenService.getIdFromToken(authorization), passportNumber), HttpStatus.OK);
     }
 
     @PostMapping("/update_rent_days")
-    public ResponseEntity<Integer> updateRentDays(@RequestParam Long user_id, @RequestParam Integer rentDays) {
+    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_CLIENT"})
+    public ResponseEntity<Integer> updateRentDays(@RequestHeader("Authorization") String authorization, @RequestParam Long user_id, @RequestParam Integer rentDays) {
         return new ResponseEntity<>(clientService.updateRentDays(user_id, rentDays), HttpStatus.OK);
     }
 
     @GetMapping("/get_rank")
-    public ResponseEntity<RankDto> getRankByUserId(@RequestParam Long user_id) {
+    @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_CLIENT"})
+    public ResponseEntity<RankDto> getRankByUserId(@RequestHeader("Authorization") String authorization, @RequestParam Long user_id) {
         return new ResponseEntity<>(clientService.getRankByUserId(user_id), HttpStatus.OK);
     }
 }

@@ -1,6 +1,7 @@
 package com.komponente.user_service.controller;
 
 import com.komponente.user_service.dto.RankDto;
+import com.komponente.user_service.security.CheckSecurity;
 import com.komponente.user_service.service.RankService;
 import javax.validation.Valid;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +21,14 @@ public class RankController {
     }
 
     @GetMapping
+    @CheckSecurity(roles = {"ROLE_ADMIN"})
     public ResponseEntity<List<RankDto>> getAllRanks() {
         return new ResponseEntity<>(rankService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-//    TODO dodati authorization za admina
-    public ResponseEntity<RankDto> addRank(@RequestBody @Valid RankDto rankDto) {
+    @CheckSecurity(roles = {"ROLE_ADMIN"})
+    public ResponseEntity<RankDto> addRank(@RequestHeader("Authorization") String authorization, @RequestBody @Valid RankDto rankDto) {
         return new ResponseEntity<>(rankService.addRank(rankDto), HttpStatus.CREATED);
     }
 
