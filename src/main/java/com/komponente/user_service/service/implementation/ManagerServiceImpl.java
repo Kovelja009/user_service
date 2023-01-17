@@ -6,6 +6,7 @@ import com.komponente.user_service.exceptions.ForbiddenException;
 import com.komponente.user_service.exceptions.NotFoundException;
 import com.komponente.user_service.mapper.UserMapper;
 import com.komponente.user_service.model.Manager;
+import com.komponente.user_service.model.User;
 import com.komponente.user_service.repository.ManagerRepository;
 import com.komponente.user_service.repository.UserRepository;
 import com.komponente.user_service.service.ManagerService;
@@ -110,5 +111,11 @@ public class ManagerServiceImpl implements ManagerService {
     public String getCompany(Long userId) {
         Manager manager = managerRepository.findByUserId(userRepository.findById(userId).get());
         return manager.getCompany().toString();
+    }
+
+    @Override
+    public UserDto getByCompany(Long companyId) {
+        Manager manager = managerRepository.findByCompany(companyId).get();
+        return userMapper.userToUserDto(manager.getUser());
     }
 }

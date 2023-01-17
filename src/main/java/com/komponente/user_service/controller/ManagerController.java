@@ -2,6 +2,7 @@ package com.komponente.user_service.controller;
 
 import com.komponente.user_service.dto.ManagerCreateDto;
 import com.komponente.user_service.dto.ManagerDto;
+import com.komponente.user_service.dto.UserDto;
 import com.komponente.user_service.security.CheckSecurity;
 import com.komponente.user_service.security.service.TokenService;
 import com.komponente.user_service.service.ManagerService;
@@ -52,6 +53,11 @@ public class ManagerController {
     @CheckSecurity(roles = {"ROLE_ADMIN", "ROLE_MANAGER"})
     public ResponseEntity<String> getCompany(@RequestHeader("Authorization") String authorization, @RequestParam @Valid Long user_id) {
         return new ResponseEntity<>(managerService.getCompany(user_id), HttpStatus.OK);
+    }
+
+    @GetMapping("manager_by_company")
+    public ResponseEntity<UserDto> getManagerCompany(@RequestParam @Valid Long companyId) {
+        return new ResponseEntity<>(managerService.getByCompany(companyId), HttpStatus.OK);
     }
 
     @PostMapping("/change_date")
