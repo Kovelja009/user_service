@@ -21,7 +21,8 @@ public class UserController {
     private TokenService tokenService;
 
     @GetMapping
-    public ResponseEntity<UserListDto> getAllUsers(){
+    @CheckSecurity(roles = {"ROLE_ADMIN"})
+    public ResponseEntity<UserListDto> getAllUsers(@RequestHeader("Authorization") String authorization){
         return new ResponseEntity<>(new UserListDto(userService.findAll()), HttpStatus.OK);
     }
 

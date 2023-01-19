@@ -52,7 +52,7 @@ public class ManagerServiceImpl implements ManagerService {
             throw new NotFoundException("Invalid user update");
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
-        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
+        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get().getId());
         changeCompany(id, managerCreateDto.getCompany()); // checks if company is valid
         manager.setUser(userRepository.findById(id).get());
         manager.setStartDate(managerCreateDto.getStartDate());
@@ -80,7 +80,7 @@ public class ManagerServiceImpl implements ManagerService {
         if(company_manager.isPresent() && !company_manager.get().getUser().getId().equals(id))
             throw new ForbiddenException("Company " + company + " is already taken!");
         ////////////////////////////////////////////////////////////////////////////////////////////
-        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
+        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get().getId());
         manager.setCompany(companyIdDto.getId());
         managerRepository.save(manager);
         return company;
@@ -101,7 +101,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public Date changeDate(Long id, Date date) {
-        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get());
+        Manager manager = managerRepository.findByUserId(userRepository.findById(id).get().getId());
         manager.setStartDate(date);
         managerRepository.save(manager);
         return date;
@@ -109,7 +109,8 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public String getCompany(Long userId) {
-        Manager manager = managerRepository.findByUserId(userRepository.findById(userId).get());
+        User user = userRepository.findById(userId).get();
+        Manager manager = managerRepository.findByUserId(user.getId());
         return manager.getCompany().toString();
     }
 
